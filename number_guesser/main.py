@@ -3,47 +3,50 @@ import sys
 
 
 def main():
-    score = 1000
+    score: int = 1000
 
     print("Guess a number between 100 and 1000")
     number = random.randint(100, 1000)
-    # Splits the number to guess in part to use it as clues
+    # Splits the solution in parts to use it as clues
     split = [int(i) for i in str(number)]
     print(number)
 
     print("Enter first guess")
     guess1: int = guess()
 
+    # First attempt
     if guess1 == number:
         print("You have win")
         print("Your score is " + str(score))
         sys.exit()
     else:
-        score = update_score(score, guess1, number)
+        score: int = update_score(score, guess1, number)
         print("Let's try again")
         print("The number starts with " + str(split[0]))
 
         print("Enter second guess")
         guess2: int = guess()
 
+        # Second attempt
         if guess2 == number:
             print("You have win")
             print("Your score is " + str(score))
             sys.exit()
         else:
-            score = update_score(score, guess2, number)
+            score: int = update_score(score, guess2, number)
             print("More luck next time")
             print("Here is another hint " + str(split[0]) + str(split[1]))
 
             print("Enter third guess")
             guess3: int = guess()
 
+            # Third attempt
             if guess3 == number:
                 print("You have win")
                 print("Your score is " + str(score))
                 sys.exit()
             else:
-                score = update_score(score, guess3, number)
+                score: int = update_score(score, guess3, number)
                 print("Today isn't your day")
                 print("The number was " + str(number))
                 print("Your score is " + str(score))
@@ -84,5 +87,5 @@ def update_score(score: int, value: int, number: int):
         return new_score
 
 
-#   Starts the app
+# Starts the app
 main()
