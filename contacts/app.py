@@ -1,7 +1,7 @@
 import sqlite3
 import sys
 
-version = "0.0.1"
+version = "0.0.2"
 
 
 class Application:
@@ -71,21 +71,20 @@ class Application:
     def delete(self):
         print("You're about to delete a contact")
         print("would you like to find it by name, email or phone number?")
-        search = str(input().upper())
+        search = str(input())
 
         print(f"Introduce it's exact {search.lower()}:")
         value = str(input())
 
-        print(value)
-        print(search)
         # if search == 'PHONE NUMBER':
         #     search = 'PHONE'
         #     pass
 
         # Delete the contact
-        contact = self.cursor.execute("DELETE FROM CONTACTS WHERE ?=?", [search, value])
+        sql = "DELETE FROM CONTACTS WHERE {} = '{}'".format(search.upper(), value)
+        contact = self.cursor.execute(sql)
         self.db.commit()
-        # print(f"Contact with {search.lower()} {value} deleted")
+        print(f"Contact with {search.lower()} {value} deleted")
 
 
 if __name__ == '__main__':
