@@ -1,7 +1,7 @@
 import sqlite3
 import sys
 
-version = "0.0.2"
+version = "0.1.0"
 
 
 class Application:
@@ -76,10 +76,11 @@ class Application:
         print(f"Introduce it's exact {search.lower()}:")
         value = str(input())
 
-        # if search == 'PHONE NUMBER':
-        #     search = 'PHONE'
-        #     pass
+        if search.upper() == 'PHONE NUMBER':
+            search = 'NUMBER'
+            pass
 
+        print(search)
         # Delete the contact
         sql = "DELETE FROM CONTACTS WHERE {} = '{}'".format(search.upper(), value)
         contact = self.cursor.execute(sql)
