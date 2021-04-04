@@ -1,7 +1,7 @@
 import sqlite3
 import sys
 
-version = "0.1.0"
+version = "0.1.1"
 
 
 class Application:
@@ -67,6 +67,11 @@ class Application:
             (name, age, email, number, notes))
         self.db.commit()
 
+    def search(self, column, value):
+        sql = "SELECT * FROM CONTACTS WHERE {} = '{}'".format(column, value)
+        contact = self.cursor.execute(sql)
+        return contact.fetchall()
+
     # TODO: Check if contact to delete exists
     def delete(self):
         print("You're about to delete a contact")
@@ -80,12 +85,15 @@ class Application:
             search = 'NUMBER'
             pass
 
-        print(search)
-        # Delete the contact
-        sql = "DELETE FROM CONTACTS WHERE {} = '{}'".format(search.upper(), value)
-        contact = self.cursor.execute(sql)
-        self.db.commit()
-        print(f"Contact with {search.lower()} {value} deleted")
+        is_valid = self.search(search, value)
+        if is_valid:
+            # Delete the contact
+            sql = "DELETE FROM CONTACTS WHERE {} = '{}'".format(search.upper(), value)
+            contact = self.cursor.execute(sql)
+            self.db.commit()
+            print(f"Contact with {search.lower()} {value} deleted")
+        else:
+            print("Contact doesn't exist")
 
 
 if __name__ == '__main__':
