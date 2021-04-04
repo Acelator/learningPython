@@ -1,7 +1,7 @@
 import sqlite3
 import sys
 
-version = "0.1.1"
+version = "0.1.2"
 
 
 class Application:
@@ -67,8 +67,8 @@ class Application:
             (name, age, email, number, notes))
         self.db.commit()
 
-    def search(self, column, value):
-        sql = "SELECT * FROM CONTACTS WHERE {} = '{}'".format(column, value)
+    def search(self, column, value) -> list:
+        sql = "SELECT * FROM CONTACTS WHERE {} = '{}'".format(str(column), str(value))
         contact = self.cursor.execute(sql)
         return contact.fetchall()
 
