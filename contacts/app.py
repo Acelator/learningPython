@@ -72,7 +72,6 @@ class Application:
         contact = self.cursor.execute(sql)
         return contact.fetchall()
 
-    # TODO: Check if contact to delete exists
     def delete(self):
         print("You're about to delete a contact")
         print("would you like to find it by name, email or phone number?")
