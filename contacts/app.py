@@ -1,7 +1,7 @@
 import sqlite3
 import sys
 
-version = "0.1.2"
+version = "0.1.3"
 
 
 class Application:
@@ -33,7 +33,7 @@ class Application:
     # def new_db(self):
     #     db = self.cursor.execute("CREATE TABLE CONTACTS ("
     #                              "ID     integer PRIMARY KEY autoincrement NOT NULL,"
-    #                              "NAME   VARCHAR(20)                   NOT NULL,"
+    #                              "NAME   VARCHAR(30)                   NOT NULL,"
     #                              "AGE integer,"
     #                              "EMAIL CHAR(30),"
     #                              "NUMBER integer,"
@@ -47,12 +47,14 @@ class Application:
         if not data:
             print("There are no contacts. Try adding a new one")
         if data:
+            print("{:<7} {:<30} {:<5} {:<30} {:<13} {:<50}".format('Id', 'Name', 'Age', 'Email', 'Number', 'Notes'))
             for x in data:
-                print(x)
+                id_, name, age, email, number, notes = x
+                print("{:<7} {:<30} {:<5} {:<30} {:<13} {:<50}".format(id_, name, age, email, number, notes))
 
     def new(self):
         print("You're creating a new contact \nInsert it's name")
-        name = str(input())
+        name = str(input()).title()
         print("How old is him/her?")
         age = str(input())
         print("Write his/her email address")
@@ -93,6 +95,9 @@ class Application:
             print(f"Contact with {search.lower()} {value} deleted")
         else:
             print("Contact doesn't exist")
+
+    def update(self):
+        pass
 
 
 if __name__ == '__main__':
