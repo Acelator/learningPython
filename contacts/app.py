@@ -7,10 +7,22 @@ version = "0.2.0"
 class Application:
     def __init__(self):
         self.name = "Contacts App"
-        self.db = sqlite3.connect("data.db")
-        self.cursor = self.db.cursor()
         self.is_running = True
-        self.main()
+
+        # Checks if db exists, if not create a new one
+        self.db = sqlite3.connect("./data.db")
+        self.cursor = self.db.cursor()
+
+        is_table = self.cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='CONTACTS'")
+        valid = is_table.fetchone()
+
+        # Table exists
+        if valid[0] == 'CONTACTS':
+            self.main()
+        # Create table
+        else:
+            self.is_running = True
+            self.main()
 
     def main(self):
         print(f"Welcome to CONTACTS App v{version}")
@@ -33,6 +45,9 @@ class Application:
                 elif option == 4:
                     print()
                     self.update()
+                elif option == 5:
+                    print()
+                    self.reset_db()
                 else:
                     print()
                     print("You have selected an invalid option")
@@ -40,17 +55,34 @@ class Application:
                 print()
                 print("Please introduce a valid option")
 
-    # def new_db(self):
-    #     db = self.cursor.execute("CREATE TABLE CONTACTS ("
-    #                              "ID     integer PRIMARY KEY autoincrement NOT NULL,"
-    #                              "NAME   VARCHAR(30)                   NOT NULL,"
-    #                              "AGE integer,"
-    #                              "EMAIL CHAR(30),"
-    #                              "NUMBER integer,"
-    #                              "NOTES CHAR(50)"
-    #                              ");"
-    #                              )
-    #     self.db.commit()
+    def create_db(self):
+        print("His")
+        self.cursor.execute("CREATE TABLE CONTACTS ("
+                            "ID     integer PRIMARY KEY autoincrement NOT NULL,"
+                            "NAME   VARCHAR(30)                   NOT NULL,"
+                            "AGE integer,"
+                            "EMAIL CHAR(30),"
+                            "NUMBER integer,"
+                            "NOTES CHAR(50)"
+                            ");"
+                            )
+        self.db.commit()
+
+    def reset_db(self):
+        self.db.execute("DROP TABLE CONTACTS")
+        self.db.commit()
+        db = self.cursor.execute("CREATE TABLE CONTACTS ("
+                                 "ID     integer PRIMARY KEY autoincrement NOT NULL,"
+                                 "NAME   VARCHAR(30)                   NOT NULL,"
+                                 "AGE integer,"
+                                 "EMAIL CHAR(30),"
+                                 "NUMBER integer,"
+                                 "NOTES CHAR(50)"
+                                 ");"
+                                 )
+
+        print("Database reset successfully")
+        self.db.commit()
 
     def display(self):
         data = self.cursor.execute("SELECT * FROM CONTACTS").fetchall()
@@ -66,7 +98,7 @@ class Application:
                   )
             for x in data:
                 id_, name, age, email, number, notes = x
-                print("{:<7} {:<30} {:<5} {:<30} {:<13} {:<50}".format(id_, name, age, email, number, notes))
+                print("{:<7} {:<30} {:<5} {:<30} {:<13} {:<50}".format(id_, name, age, email, number, str(notes)))
 
     def new(self):
         print("You're creating a new contact \nInsert it's name")
@@ -79,6 +111,10 @@ class Application:
         number = int(input())
         print("Addition info?")
         notes = str(input())
+
+        if notes.upper() == "" or "No":
+            notes = None
+            pass
 
         contact = self.cursor.execute(
             "INSERT INTO CONTACTS (NAME, AGE, EMAIL, NUMBER, NOTES) VALUES (?, ?, ?, ?, ?)",
