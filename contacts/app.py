@@ -1,7 +1,7 @@
 import sqlite3
 import sys
 
-version = "0.1.3"
+version = "0.2.0"
 
 
 class Application:
@@ -15,20 +15,30 @@ class Application:
     def main(self):
         print(f"Welcome to CONTACTS App v{version}")
         while self.is_running:
+            print()
             print(
-                "What operation would you like to perform: Display contacts (1), add a new one (2), or remove one (3)?")
+                "What operation would you like to perform: Display contacts (1), add a new one (2), remove one (3),"
+                " or update a existing contact (4)?")
             try:
                 option = int(input())
                 if option == 1:
+                    print()
                     self.display()
                 elif option == 2:
+                    print()
                     self.new()
                 elif option == 3:
+                    print()
                     self.delete()
+                elif option == 4:
+                    print()
+                    self.update()
+                else:
+                    print()
+                    print("You have selected an invalid option")
             except ValueError:
+                print()
                 print("Please introduce a valid option")
-                self.is_running = False
-                sys.exit()
 
     # def new_db(self):
     #     db = self.cursor.execute("CREATE TABLE CONTACTS ("
@@ -48,6 +58,12 @@ class Application:
             print("There are no contacts. Try adding a new one")
         if data:
             print("{:<7} {:<30} {:<5} {:<30} {:<13} {:<50}".format('Id', 'Name', 'Age', 'Email', 'Number', 'Notes'))
+            # Create a separation between header and contacts
+            print("{:<7} {:<30} {:<5} {:<30} {:<13} {:<50}".format('-------', '------------------------------', '-----',
+                                                                   '------------------------------',
+                                                                   '-------------',
+                                                                   '--------------------------------------------------')
+                  )
             for x in data:
                 id_, name, age, email, number, notes = x
                 print("{:<7} {:<30} {:<5} {:<30} {:<13} {:<50}".format(id_, name, age, email, number, notes))
@@ -97,7 +113,26 @@ class Application:
             print("Contact doesn't exist")
 
     def update(self):
-        pass
+        print("What contact would you like to update?")
+        print("Introduce it's id")
+        id_ = int(input())
+
+        contact = self.search('ID', id_)
+        if contact:
+            # Printing contact name
+            print("You're updating contact {}".format(contact[0][1]))
+            print("What property would you like to update?")
+            search = str(input())
+
+            print("OKey, introduce it's new {}".format(search.lower()))
+            value = str(input())
+
+            sql = "UPDATE CONTACTS SET {} = '{}' WHERE ID = '{}'".format(search.upper(), value, id_)
+            self.cursor.execute(sql)
+            self.db.commit()
+            print("Contact with id {} updated successfully".format(id_))
+        else:
+            print("You have introduced an invalid id")
 
 
 if __name__ == '__main__':
