@@ -12,3 +12,14 @@ def timing(f):
         return ret
 
     return wrap
+
+
+# Given a string, it returns if it's equals to False or True
+def true_or_false(string: str):
+    string = string.upper()
+    if string == 'FALSE':
+        return False
+    elif string == 'NO':
+        return False
+    else:
+        return True

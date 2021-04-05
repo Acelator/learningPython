@@ -144,3 +144,6 @@ cython_debug/
 
 # Databases
 *.db
+
+# Contacts project files
+contacts/config.json

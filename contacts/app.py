@@ -1,7 +1,13 @@
+import os
 import sqlite3
 import sys
+import json
+import utils
 
-version = "0.3.0"
+version = "0.4.0"
+
+
+# Create a dict with all possible options?
 
 
 class Application:
@@ -9,6 +15,35 @@ class Application:
         self.name = "Contacts App"
         self.is_running = True
         print(f"Welcome to CONTACTS App v{version}")
+
+        # Looks up if config file exists, if not create one (config.json)
+        try:
+            # Loads config.json content into data
+            self.data = json.load(open("config.json", "r"))
+
+        # If file doesn't exist we would ask to the user to set a custom config
+        except FileNotFoundError:
+            # TODO: Add translations to others lang
+            print()
+            print(
+                "It's looks like it is the first time that the app is running. "
+                "We will ask a few question to customize the app for you, respond 'Yes' or 'No'")
+
+            print("Capitalize first letter of a contact's name automatically?")
+            capitalize_first = utils.true_or_false(input())
+
+            config: dict = {
+                'capitalize_first': capitalize_first
+            }
+
+            with open("config.json", 'x') as json_file:
+                json.dump(config, json_file)
+
+            print()
+            print("It is recommendable to back up config.json as well as data.db to not lose data")
+
+            # Loads config.json content into data
+            self.data = json.load(open("config.json", "r"))
 
         # Checks if db exists, if not create a new one
         self.db = sqlite3.connect("./data.db")
@@ -19,9 +54,9 @@ class Application:
 
         # Checks if Table CONTACTS exists, if not it is created
         if table is not None:
-            print("Db already exists")
             self.main()
         else:
+            print()
             print("Initialization.... Creating DB")
             self.create_db()
             self.main()
@@ -39,16 +74,20 @@ class Application:
                     self.display()
                 elif option == 2:
                     print()
-                    self.new()
+                    self.new_contact()
                 elif option == 3:
                     print()
-                    self.delete()
+                    self.delete_contact()
                 elif option == 4:
                     print()
-                    self.update()
+                    self.update_contact()
                 elif option == 5:
                     print()
                     self.reset_db()
+                # TODO: DEBUG
+                elif option == 6:
+                    print()
+                    os.remove("config.json")
                 else:
                     print()
                     print("You have selected an invalid option")
@@ -100,15 +139,29 @@ class Application:
                 id_, name, age, email, number, notes = x
                 print("{:<7} {:<30} {:<5} {:<30} {:<13} {:<50}".format(id_, name, age, email, number, str(notes)))
 
-    def new(self):
+    def new_contact(self):
         print("You're creating a new contact \nInsert it's name")
-        name = str(input()).title()
+        name = str(input())
+
+        # Config 1 - Sets up if first letter on name should be capitalize
+        capitalize = bool(self.data['capitalize_first'])
+        if capitalize:
+            name = name.title()
+            pass
+
+        print()
         print("How old is him/her?")
         age = str(input())
+
+        print()
         print("Write his/her email address")
         email = str(input())
+
+        print()
         print("Mobile number")
         number = int(input())
+
+        print()
         print("Addition info?")
         notes = str(input())
 
@@ -130,7 +183,7 @@ class Application:
         contact = self.cursor.execute(sql)
         return contact.fetchall()
 
-    def delete(self):
+    def delete_contact(self):
         print("You're about to delete a contact")
         print("would you like to find it by name, email or phone number?")
         search = str(input())
@@ -152,7 +205,7 @@ class Application:
         else:
             print("Contact doesn't exist")
 
-    def update(self):
+    def update_contact(self):
         print("What contact would you like to update?")
         print("Introduce it's id")
         id_ = int(input())
