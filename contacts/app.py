@@ -1,31 +1,32 @@
 import sqlite3
 import sys
 
-version = "0.2.0"
+version = "0.3.0"
 
 
 class Application:
     def __init__(self):
         self.name = "Contacts App"
         self.is_running = True
+        print(f"Welcome to CONTACTS App v{version}")
 
         # Checks if db exists, if not create a new one
         self.db = sqlite3.connect("./data.db")
         self.cursor = self.db.cursor()
 
         is_table = self.cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='CONTACTS'")
-        valid = is_table.fetchone()
+        table = is_table.fetchone()
 
-        # Table exists
-        if valid[0] == 'CONTACTS':
+        # Checks if Table CONTACTS exists, if not it is created
+        if table is not None:
+            print("Db already exists")
             self.main()
-        # Create table
         else:
-            self.is_running = True
+            print("Initialization.... Creating DB")
+            self.create_db()
             self.main()
 
     def main(self):
-        print(f"Welcome to CONTACTS App v{version}")
         while self.is_running:
             print()
             print(
@@ -56,7 +57,6 @@ class Application:
                 print("Please introduce a valid option")
 
     def create_db(self):
-        print("His")
         self.cursor.execute("CREATE TABLE CONTACTS ("
                             "ID     integer PRIMARY KEY autoincrement NOT NULL,"
                             "NAME   VARCHAR(30)                   NOT NULL,"
@@ -112,7 +112,11 @@ class Application:
         print("Addition info?")
         notes = str(input())
 
-        if notes.upper() == "" or "No":
+        # Checks if not notes where specified to set a None value in DB
+        if notes.upper() == "":
+            notes = None
+            pass
+        elif notes.upper() == "NO":
             notes = None
             pass
 
@@ -173,7 +177,7 @@ class Application:
 
 if __name__ == '__main__':
     try:
-        app = Application()
+        Application()
     except KeyboardInterrupt:
         print()
         try:
