@@ -3,10 +3,8 @@ import sqlite3
 import sys
 import json
 import utils
-from pydrive.drive import GoogleDrive
-from pydrive.auth import GoogleAuth
 
-version = "0.4.1"
+version = "0.4.2"
 
 
 # Create a dict with all possible options?
@@ -23,15 +21,6 @@ class Application:
             # Loads config.json content into data
             self.data = json.load(open("config.json", "r"))
 
-            if self.data['google_drive']:
-                # Sets up Google Drive
-                gauth = GoogleAuth()
-                gauth.LocalWebserverAuth()
-                drive = GoogleDrive(gauth)
-                # file = drive.CreateFile()
-                # file.SetContentFile('data.db')
-                # file.Upload()
-
         # If file doesn't exist we would ask to the user to set a custom config
         except FileNotFoundError:
             # TODO: Add translations to others lang
@@ -44,24 +33,8 @@ class Application:
             capitalize_first = utils.true_or_false(input())
 
             print()
-            print("Would you like to backup contacts to Google DRIVE? (Yes/No)")
-            google_dive = utils.true_or_false(input())
-
-            if google_dive:
-                print("A browser window will open so you can authorize this app to grant access")
-
-                # Sets up Google Drive
-                gauth = GoogleAuth()
-                gauth.LocalWebserverAuth()
-                drive = GoogleDrive(gauth)
-                file = drive.CreateFile()
-                file.SetContentFile('data.db')
-                file.Upload()
-                pass
-
             config: dict = {
                 'capitalize_first': capitalize_first,
-                'google_drive': google_dive
             }
 
             with open("config.json", 'x') as json_file:
