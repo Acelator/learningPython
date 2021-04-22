@@ -2,14 +2,14 @@ import os
 import sqlite3
 import sys
 import json
-import utils
 
-version = "0.4.2"
+import utils
+import drive
+
+version = "0.4.3"
 
 
 # Create a dict with all possible options?
-
-
 class Application:
     def __init__(self):
         self.name = "Contacts App"
@@ -35,6 +35,7 @@ class Application:
             print()
             config: dict = {
                 'capitalize_first': capitalize_first,
+                'version': version
             }
 
             with open("config.json", 'x') as json_file:
@@ -54,12 +55,14 @@ class Application:
         if table is not None:
             self.main()
         else:
-            print()
             print("Initialization.... Creating DB")
             self.create_db()
             self.main()
 
     def main(self):
+        # Sets up Google Drive
+        _drive = drive.drive()
+
         while self.is_running:
             print()
             print(

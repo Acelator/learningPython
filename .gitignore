@@ -147,4 +147,5 @@ cython_debug/
 
 # Contacts project files
 contacts/config.json
-contacts/client_secrets.json
+credentials.*
+token.*
